@@ -1,0 +1,60 @@
+using ChatApplication.Data;
+using ChatApplication.DTOs.Auth;
+using ChatApplication.Models;
+using ChatApplication.Services;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+
+namespace ChatApplication.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class AuthController : ControllerBase
+    {
+        private readonly ChatDbContext _dbContext;
+        private readonly JwtService _jwtService;
+        public AuthController(ChatDbContext dbContext, JwtService jwtService)
+        {
+            _dbContext = dbContext;
+            _jwtService = jwtService;
+        }
+        [HttpPost("Login")]
+        public ActionResult Login()
+        {
+            return Ok("Login done");
+        }
+
+        [HttpPost("Register")]
+        public async Task<ActionResult> Register([FromBody] RegisterRequest dto)
+        {
+            if (dto == null)
+            {
+                return BadRequest(new { Message = "User cannot be null" });
+            }
+            var existingUser = await _dbContext.Users.FirstOrDefaultAsync(u =>
+                    u.Email == dto.Email);
+            if (existingUser != null)
+            {
+                return BadRequest(new { Message = "User Already Exists" });
+
+            }
+            var hashPassword = BCrypt.Net.BCrypt.HashPassword(dto.Password);
+
+            var user = new User
+            {
+                Name = dto.Name,
+                Email = dto.Email,
+                CreateAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow,
+                Password = hashPassword
+            };
+
+            await _dbContext.Users.AddAsync(user);
+            await _dbContext.SaveChangesAsync();
+
+            var token = _jwtService.GenerateToken(dto);
+            return Ok(new {token});
+        }
+    }
+}
