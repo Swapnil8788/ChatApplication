@@ -15,12 +15,12 @@ public class JwtService
     {
         _configuration = configuration;
     }
-    public string GenerateToken(loginDTO user)
+    public string GenerateToken(jwtClaimsDTO user)
     {
         var claims = new List<Claim>()
         {
             new Claim(ClaimTypes.Email,user.Email),
-            // new Claim(ClaimTypes.Role,user.Role),
+            new Claim(ClaimTypes.Role,user.Role),
         };
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));

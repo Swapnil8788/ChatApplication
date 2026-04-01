@@ -28,22 +28,28 @@ namespace ChatApplication.Controllers
         [HttpPost("Login")]
         public async Task<ActionResult> Login([FromBody] loginDTO dto)
         {
-            var userEmail = await _dbContext.Users.FirstOrDefaultAsync(u => u.Email == dto.Email);
-            if(userEmail == null)
+            var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Email == dto.Email);
+            if(user == null)
             {
                 return BadRequest(new { Message = "Please first register the user"});
             }
-            var isPasswordMatches = BCrypt.Net.BCrypt.Verify(dto.Password, userEmail.Password);
-            System.IO.File.AppendAllText(path, isPasswordMatches.ToString());
+            var isPasswordMatches = BCrypt.Net.BCrypt.Verify(dto.Password, user.Password);
             if (!isPasswordMatches)
             {
                 return BadRequest(new {Message= "please enter a correct password"});
             }
-            var token = _jwtService.GenerateToken(dto);
+            var userRoles = await _dbContext.UserRoles.FirstOrDefaultAsync(u=>u.UserId == user.Id);
+            var role = await _dbContext.Roles.FirstOrDefaultAsync(r=>r.RoleId == userRoles.RoleId);
+            jwtClaimsDTO jwtObj = new jwtClaimsDTO
+            {
+                Email = dto.Email,
+                Role = role.RoleName
+            };
+            var token = _jwtService.GenerateToken(jwtObj);
             return Ok(new { token = token});
         }
 
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         [HttpGet("getroles")]
         public async Task<ActionResult> getRoles()
         {
@@ -68,13 +74,14 @@ namespace ChatApplication.Controllers
             var existingRole = await _dbContext.Roles.FirstOrDefaultAsync(u=>u.RoleName == dto.Role);
             if(existingRole == null)
             {
-                 var roleToCreate = new Role
-                 {
-                     RoleName = dto.Role
-                 };
-                 await _dbContext.Roles.AddAsync(roleToCreate);
-                 await _dbContext.SaveChangesAsync();
-                 existingRole = roleToCreate;
+                //  var roleToCreate = new Role
+                //  {
+                //      RoleName = dto.Role
+                //  };
+                //  await _dbContext.Roles.AddAsync(roleToCreate);
+                //  await _dbContext.SaveChangesAsync();
+                //  existingRole = roleToCreate;
+                return BadRequest(new {Message="Please enter the role of this application"});
             }
             var hashPassword = BCrypt.Net.BCrypt.HashPassword(dto.Password);
 
