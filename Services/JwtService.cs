@@ -3,6 +3,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using ChatApplication.DTOs.Auth;
+using ChatApplication.DTOs.UserDTOs;
 using Microsoft.IdentityModel.Tokens;
 
 namespace ChatApplication.Services;
@@ -14,12 +15,12 @@ public class JwtService
     {
         _configuration = configuration;
     }
-    public string GenerateToken(RegisterRequest user)
+    public string GenerateToken(loginDTO user)
     {
         var claims = new List<Claim>()
         {
             new Claim(ClaimTypes.Email,user.Email),
-            new Claim(ClaimTypes.Role,user.Role),
+            // new Claim(ClaimTypes.Role,user.Role),
         };
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));

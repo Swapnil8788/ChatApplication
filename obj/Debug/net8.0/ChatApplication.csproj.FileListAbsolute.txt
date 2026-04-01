@@ -5,9 +5,12 @@
 /home/swapnilchunarkar/DOTNET/ChatApplication/bin/Debug/net8.0/ChatApplication.runtimeconfig.json
 /home/swapnilchunarkar/DOTNET/ChatApplication/bin/Debug/net8.0/ChatApplication.dll
 /home/swapnilchunarkar/DOTNET/ChatApplication/bin/Debug/net8.0/ChatApplication.pdb
+/home/swapnilchunarkar/DOTNET/ChatApplication/bin/Debug/net8.0/AutoMapper.dll
 /home/swapnilchunarkar/DOTNET/ChatApplication/bin/Debug/net8.0/Azure.Core.dll
 /home/swapnilchunarkar/DOTNET/ChatApplication/bin/Debug/net8.0/Azure.Identity.dll
+/home/swapnilchunarkar/DOTNET/ChatApplication/bin/Debug/net8.0/BCrypt.Net-Next.dll
 /home/swapnilchunarkar/DOTNET/ChatApplication/bin/Debug/net8.0/Humanizer.dll
+/home/swapnilchunarkar/DOTNET/ChatApplication/bin/Debug/net8.0/Microsoft.AspNetCore.Authentication.JwtBearer.dll
 /home/swapnilchunarkar/DOTNET/ChatApplication/bin/Debug/net8.0/Microsoft.Bcl.AsyncInterfaces.dll
 /home/swapnilchunarkar/DOTNET/ChatApplication/bin/Debug/net8.0/Microsoft.CodeAnalysis.dll
 /home/swapnilchunarkar/DOTNET/ChatApplication/bin/Debug/net8.0/Microsoft.CodeAnalysis.CSharp.dll
@@ -120,6 +123,7 @@
 /home/swapnilchunarkar/DOTNET/ChatApplication/obj/Debug/net8.0/ChatApplication.csproj.CoreCompileInputs.cache
 /home/swapnilchunarkar/DOTNET/ChatApplication/obj/Debug/net8.0/ChatApplication.MvcApplicationPartsAssemblyInfo.cs
 /home/swapnilchunarkar/DOTNET/ChatApplication/obj/Debug/net8.0/ChatApplication.MvcApplicationPartsAssemblyInfo.cache
+/home/swapnilchunarkar/DOTNET/ChatApplication/obj/Debug/net8.0/ChatApplication.sourcelink.json
 /home/swapnilchunarkar/DOTNET/ChatApplication/obj/Debug/net8.0/staticwebassets.build.json
 /home/swapnilchunarkar/DOTNET/ChatApplication/obj/Debug/net8.0/staticwebassets.development.json
 /home/swapnilchunarkar/DOTNET/ChatApplication/obj/Debug/net8.0/staticwebassets/msbuild.ChatApplication.Microsoft.AspNetCore.StaticWebAssets.props
@@ -134,6 +138,3 @@
 /home/swapnilchunarkar/DOTNET/ChatApplication/obj/Debug/net8.0/ChatApplication.pdb
 /home/swapnilchunarkar/DOTNET/ChatApplication/obj/Debug/net8.0/ChatApplication.genruntimeconfig.cache
 /home/swapnilchunarkar/DOTNET/ChatApplication/obj/Debug/net8.0/ref/ChatApplication.dll
-/home/swapnilchunarkar/DOTNET/ChatApplication/bin/Debug/net8.0/BCrypt.Net-Next.dll
-/home/swapnilchunarkar/DOTNET/ChatApplication/bin/Debug/net8.0/Microsoft.AspNetCore.Authentication.JwtBearer.dll
-/home/swapnilchunarkar/DOTNET/ChatApplication/obj/Debug/net8.0/ChatApplication.sourcelink.json

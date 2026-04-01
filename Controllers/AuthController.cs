@@ -3,9 +3,13 @@ using ChatApplication.DTOs.Auth;
 using ChatApplication.DTOs.UserDTOs;
 using ChatApplication.Models;
 using ChatApplication.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.ObjectPool;
+using Microsoft.VisualBasic;
+using System.IO;
 
 namespace ChatApplication.Controllers
 {
@@ -13,6 +17,7 @@ namespace ChatApplication.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
+        private string path = "log.txt";
         private readonly ChatDbContext _dbContext;
         private readonly JwtService _jwtService;
         public AuthController(ChatDbContext dbContext, JwtService jwtService)
@@ -21,9 +26,29 @@ namespace ChatApplication.Controllers
             _jwtService = jwtService;
         }
         [HttpPost("Login")]
-        public ActionResult Login()
+        public async Task<ActionResult> Login([FromBody] loginDTO dto)
         {
-            return Ok("Login done");
+            var userEmail = await _dbContext.Users.FirstOrDefaultAsync(u => u.Email == dto.Email);
+            if(userEmail == null)
+            {
+                return BadRequest(new { Message = "Please first register the user"});
+            }
+            var isPasswordMatches = BCrypt.Net.BCrypt.Verify(dto.Password, userEmail.Password);
+            System.IO.File.AppendAllText(path, isPasswordMatches.ToString());
+            if (!isPasswordMatches)
+            {
+                return BadRequest(new {Message= "please enter a correct password"});
+            }
+            var token = _jwtService.GenerateToken(dto);
+            return Ok(new { token = token});
+        }
+
+        [Authorize]
+        [HttpGet("getroles")]
+        public async Task<ActionResult> getRoles()
+        {
+            var roles = _dbContext.Roles;
+            return Ok(new {roles = roles});
         }
 
         [HttpPost("Register")]
@@ -72,14 +97,14 @@ namespace ChatApplication.Controllers
             await _dbContext.Users.AddAsync(user);
             await _dbContext.SaveChangesAsync();
 
-            var token = _jwtService.GenerateToken(dto);
+            // var token = _jwtService.GenerateToken(dto);
 
             var userToSend = new RegisteredResponseDTO
             {
               Name = user.Email,
               Email = user.Name  
             };
-            return Ok(new {token, user = userToSend});
+            return Ok(new {Message = "Registration Succussful, Please login."});
         }
     }
 }
