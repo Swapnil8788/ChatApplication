@@ -1,5 +1,6 @@
 using ChatApplication.Data;
 using ChatApplication.DTOs.Auth;
+using ChatApplication.DTOs.UserDTOs;
 using ChatApplication.Models;
 using ChatApplication.Services;
 using Microsoft.AspNetCore.Http;
@@ -39,6 +40,17 @@ namespace ChatApplication.Controllers
                 return BadRequest(new { Message = "User Already Exists" });
 
             }
+            var existingRole = await _dbContext.Roles.FirstOrDefaultAsync(u=>u.RoleName == dto.Role);
+            if(existingRole == null)
+            {
+                 var roleToCreate = new Role
+                 {
+                     RoleName = dto.Role
+                 };
+                 await _dbContext.Roles.AddAsync(roleToCreate);
+                 await _dbContext.SaveChangesAsync();
+                 existingRole = roleToCreate;
+            }
             var hashPassword = BCrypt.Net.BCrypt.HashPassword(dto.Password);
 
             var user = new User
@@ -47,14 +59,27 @@ namespace ChatApplication.Controllers
                 Email = dto.Email,
                 CreateAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow,
-                Password = hashPassword
+                Password = hashPassword,
+                UserRoles = new List<UserRole>
+                {
+                    new UserRole
+                    {
+                        RoleId = existingRole.RoleId
+                    }
+                }
             };
 
             await _dbContext.Users.AddAsync(user);
             await _dbContext.SaveChangesAsync();
 
             var token = _jwtService.GenerateToken(dto);
-            return Ok(new {token});
+
+            var userToSend = new RegisteredResponseDTO
+            {
+              Name = user.Email,
+              Email = user.Name  
+            };
+            return Ok(new {token, user = userToSend});
         }
     }
 }
